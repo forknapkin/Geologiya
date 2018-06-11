@@ -1,0 +1,425 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Data;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+using System.Data.Common;
+
+namespace Geologiya
+{
+    class Util
+    {
+        public static bool Insert;
+
+        public static int ID;
+
+        private static string ConStr;
+
+        public static string language = "Русскоязычная";
+
+        public static string cultureInfo = "";
+        
+        public static void ReadCultureInfo()
+        {
+            string fileName = "cultureInfo.ini";
+            FileStream stream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read);
+            StreamReader reader = new StreamReader(stream);
+            try
+            {
+                cultureInfo = reader.ReadLine();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                reader.Close();
+            }
+
+        }
+        public static bool IsAuthotization
+        { get; set; }
+
+        public static bool ReportView { set; get; }
+
+        public static bool ReadConStr()
+        {
+            string fileName = "config.ini";
+            if (language == "Русскоязычная")
+                fileName = "config.ini";
+            else
+                fileName = "configUz.ini";
+            FileStream stream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read);
+            StreamReader reader = new StreamReader(stream);
+            try
+            {
+                ConStr = reader.ReadLine();
+            }
+            catch
+            { }
+            finally
+            {
+                reader.Close();
+            }
+            if (ConStr != "")
+            {
+                //MessageBox.Show(ConStr);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static string GetConnectionString()
+        {
+            if (ReadConStr())
+            {
+                return ConStr;                
+            }
+            return "";
+        }
+        // 1 - ключевые слова, 2 - оператор, 3 - запрос из линка, 4 - сложный, 5 - исключения
+        public static string ExComboQuery(string strQuery, string op, string rescom, bool comboSelect, bool exception)
+        {
+            string com = "SELECT [t1].[ID] FROM [dbo].[danie] AS [t1] WHERE ";
+            if (comboSelect)
+            {
+                strQuery = strQuery.Replace("(", " ( ");
+                strQuery = strQuery.Replace(")", " ) ");
+                strQuery = strQuery.Replace("&", " AND ");
+                strQuery = strQuery.Replace("|", " OR ");
+                string[] keywords = strQuery.Split(' ');
+                keywords = keywords.Where(s => s != string.Empty).ToArray();
+
+                for (int i = 0; i < keywords.Length; i++)
+                {
+                    switch (keywords[i])
+                    {
+                        case "(":
+                        case ")":
+                        case "AND":
+                        case "OR":
+                            com = com + " " + keywords[i] + " ";
+                            break;
+                        default:
+                            com = com + "((Slova LIKE '%" + " " + keywords[i] + "%') OR (Slova LIKE '%." + keywords[i] + "%') " +
+                                "OR (Slova LIKE '" + keywords[i] + "%'))";
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                string[] keywords = strQuery.Split(' ', ',').Where(s => s != string.Empty).ToArray();
+
+                com += "((Slova LIKE '%" + " " + keywords[0] + "%') OR (Slova LIKE '%." + keywords[0] + "%') OR (Slova LIKE '" + keywords[0] + "%'))";
+                for (int i = 1; i < keywords.Length; i++)
+                {
+                    com = com + op + "((Slova LIKE '%" + " " + keywords[i] + "%') OR (Slova LIKE '%." + keywords[i] + "%') OR (Slova LIKE '" + keywords[i] + "%'))";
+                }
+            }
+            if (exception)
+            {
+                com = com.Insert(0, " AND [t0].[ID] NOT IN (");
+            }
+            if (!exception)
+            {
+                com = com.Insert(0, " AND [t0].[ID] IN (");
+            }
+            com = com.Insert(com.Length - 1, ") ");
+            rescom = rescom.Insert(rescom.IndexOf("ORDER") - 1, com);
+
+            //MessageBox.Show(com);
+            
+            return rescom;
+            
+        }
+
+        public static string MultiComboQuery(string keyWords, string exKeyWords, string firstOp, string secondOp, string linqQuery, bool comboSelect, bool excomboSelect)
+        {
+            string com = "SELECT [t1].[ID] FROM [dbo].[danie] AS [t1] WHERE ";
+            if (comboSelect)
+            {
+                keyWords = keyWords.Replace("(", " ( ");
+                keyWords = keyWords.Replace(")", " ) ");
+                keyWords = keyWords.Replace("&", " AND ");
+                keyWords = keyWords.Replace("|", " OR ");
+                string[] keywords = keyWords.Split(' ');
+                keywords = keywords.Where(s => s != string.Empty).ToArray();
+
+                for (int i = 0; i < keywords.Length; i++)
+                {
+                    switch (keywords[i])
+                    {
+                        case "(":
+                        case ")":
+                        case "AND":
+                        case "OR":
+                            com = com + " " + keywords[i] + " ";
+                            break;
+                        default:
+                            com = com + "((Slova LIKE '%" + " " + keywords[i] + "%') OR (Slova LIKE '%." + keywords[i] + "%') " +
+                                "OR (Slova LIKE '" + keywords[i] + "%'))";
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                string[] keywords = keyWords.Split(' ', ',').Where(s => s != string.Empty).ToArray();
+
+                com += "((Slova LIKE '%" + " " + keywords[0] + "%') OR (Slova LIKE '%." + keywords[0] + "%') OR (Slova LIKE '" + keywords[0] + "%'))";
+                for (int i = 1; i < keywords.Length; i++)
+                {
+                    com = com + firstOp + "((Slova LIKE '%" + " " + keywords[i] + "%') OR (Slova LIKE '%." + keywords[i] + "%') OR (Slova LIKE '" + keywords[i] + "%'))";
+                }
+            }
+            com = com.Insert(com.Length - 1, ") ");
+            com = com.Insert(0, " AND [t0].[ID] IN (");
+            
+
+            string exCom = "SELECT [t2].[ID] FROM [dbo].[danie] AS [t2] WHERE ";
+            if (excomboSelect)
+            {
+                exKeyWords = exKeyWords.Replace("(", " ( ");
+                exKeyWords = exKeyWords.Replace(")", " ) ");
+                exKeyWords = exKeyWords.Replace("&", " AND ");
+                exKeyWords = exKeyWords.Replace("|", " OR ");
+                string[] keywords = exKeyWords.Split(' ');
+                keywords = keywords.Where(s => s != string.Empty).ToArray();
+
+                for (int i = 0; i < keywords.Length; i++)
+                {
+                    switch (keywords[i])
+                    {
+                        case "(":
+                        case ")":
+                        case "AND":
+                        case "OR":
+                            exCom = exCom + " " + keywords[i] + " ";
+                            break;
+                        default:
+                            exCom = exCom + "((Slova LIKE '%" + " " + keywords[i] + "%') OR (Slova LIKE '%." + keywords[i] + "%') " +
+                                "OR (Slova LIKE '" + keywords[i] + "%'))";
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                string[] keywords = exKeyWords.Split(' ', ',').Where(s => s != string.Empty).ToArray();
+
+                exCom += "((Slova LIKE '%" + " " + keywords[0] + "%') OR (Slova LIKE '%." + keywords[0] + "%') OR (Slova LIKE '" + keywords[0] + "%'))";
+                for (int i = 1; i < keywords.Length; i++)
+                {
+                    exCom = exCom + secondOp + "((Slova LIKE '%" + " " + keywords[i] + "%') OR (Slova LIKE '%." + keywords[i] + "%') OR (Slova LIKE '" + keywords[i] + "%'))";
+                }
+            }
+            
+            exCom = exCom.Insert(exCom.Length - 1, ") ");
+            exCom = exCom.Insert(0, " AND [t1].[ID] NOT IN (");
+
+            com = com.Insert(com.Length - 1, exCom);
+            
+
+            linqQuery = linqQuery.Insert(linqQuery.IndexOf("ORDER") - 1, com);
+
+            //MessageBox.Show(com);
+
+            return linqQuery;
+
+        }
+
+        // 1- ключевые слова, 2 - оператор, 3 - объект команды, 4 - сложный, 5 - исключения
+        public static DataTable ComboQueryResult(string str, string sign, DbCommand dbcom, bool comboSelect, bool exception, string author)
+        {
+            DataTable tab = new DataTable("danie");
+          
+            BindingSource bs = new BindingSource();
+
+            SqlConnection con = new SqlConnection(Util.GetConnectionString());
+            string rescom = dbcom.CommandText;
+
+            if (author != string.Empty)
+            {
+                string paramName = "";
+                for (int i = 0; i < dbcom.Parameters.Count; i++)
+                {
+                    if (dbcom.Parameters[i].Value.ToString() == "%" + author + "%")
+                        paramName = dbcom.Parameters[i].ParameterName;
+                }
+
+                string strReplace = string.Format("[t0].[Aftor] LIKE {0}", paramName);
+                rescom = rescom.Replace(strReplace, "[t0].[Aftor] LIKE '" + author + "'" + " OR [Aftor] LIKE '" + author +
+                    " %'" + " OR [Aftor] LIKE '% " + author + " %'" + " OR [Aftor] LIKE '% " + author + "'");
+            }
+
+            string com = ExComboQuery(str, sign, rescom, comboSelect, exception).ToString();
+            
+            SqlCommand cmd = new SqlCommand();
+            for (int i = 0; i < dbcom.Parameters.Count; i++)
+            {
+                if (dbcom.Parameters[i].Value.ToString() != "%" + author + "%")
+                {
+                    SqlParameter p = new SqlParameter(dbcom.Parameters[i].ParameterName, dbcom.Parameters[i].Value);
+                    cmd.Parameters.Add(p);
+                }
+                
+            }
+
+            FileStream stream = new FileStream(@"query.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(com);
+            
+            writer.Close();
+            cmd.CommandText = com;
+            cmd.Connection = con;
+            
+            SqlDataAdapter adapt = new SqlDataAdapter(cmd);
+            
+            try
+            {
+                con.Open();
+                adapt.Fill(tab);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return tab;
+        }
+
+        public static DataTable MultiQueryResult(string keyWords, string exKeyWords, string firstOp, string secondOp, DbCommand dbcom, bool comboSelect, bool excomboSelect, string author)
+        {
+            DataTable tab = new DataTable("danieEx");
+
+            BindingSource bs = new BindingSource();
+
+            SqlConnection con = new SqlConnection(Util.GetConnectionString());
+            string rescom = dbcom.CommandText;
+
+            if (author != string.Empty)
+            {
+                string paramName = "";
+                for (int i = 0; i < dbcom.Parameters.Count; i++)
+                {
+                    if (dbcom.Parameters[i].Value.ToString() == "%" + author + "%")
+                        paramName = dbcom.Parameters[i].ParameterName;
+                }
+
+                string strReplace = string.Format("[t0].[Aftor] LIKE {0}", paramName);
+                rescom = rescom.Replace(strReplace, "[t0].[Aftor] LIKE '" + author + "'" + " OR [Aftor] LIKE '" + author +
+                    " %'" + " OR [Aftor] LIKE '% " + author + " %'" + " OR [Aftor] LIKE '% " + author + "'");
+            }
+
+            string com = MultiComboQuery(keyWords, exKeyWords, firstOp, secondOp, rescom, comboSelect, excomboSelect).ToString();
+
+            SqlCommand cmd = new SqlCommand();
+            for (int i = 0; i < dbcom.Parameters.Count; i++)
+            {
+                if (dbcom.Parameters[i].Value.ToString() != "%" + author + "%")
+                {
+                    SqlParameter p = new SqlParameter(dbcom.Parameters[i].ParameterName, dbcom.Parameters[i].Value);
+                    cmd.Parameters.Add(p);
+                }
+
+            }
+            
+
+
+            FileStream stream = new FileStream(@"query.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(com);
+
+            writer.Close();
+            cmd.CommandText = com;
+            cmd.Connection = con;
+
+            SqlDataAdapter adapt = new SqlDataAdapter(cmd);
+
+            try
+            {
+                con.Open();
+                adapt.Fill(tab);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return tab;
+        }
+
+        public static DataTable AuthorQueryResult(string author, DbCommand dbcom)
+        {
+            DataTable tab = new DataTable("danie");
+
+            SqlConnection con = new SqlConnection(Util.GetConnectionString());
+            string rescom = dbcom.CommandText;
+
+            string paramName = "";
+            for (int i = 0; i < dbcom.Parameters.Count; i++)
+            {
+                if(dbcom.Parameters[i].Value.ToString() == "%" + author + "%")
+                    paramName = dbcom.Parameters[i].ParameterName;
+            }
+
+            string strReplace = string.Format("[t0].[Aftor] LIKE {0}", paramName);
+            rescom = rescom.Replace(strReplace, "[t0].[Aftor] LIKE '" + author + "'" + " OR [Aftor] LIKE '" + author +
+                " %'" + " OR [Aftor] LIKE '% " + author + " %'" + " OR [Aftor] LIKE '% " + author + "'" + "OR [Aftor] LIKE '" + author + ",'" + " OR [Aftor] LIKE '" + author +
+                ", %'" + " OR [Aftor] LIKE '% " + author + ", %'" + " OR [Aftor] LIKE '% " + author + ",'");
+
+            //return rescom;
+            SqlCommand cmd = new SqlCommand();
+            for (int i = 0; i < dbcom.Parameters.Count; i++)
+            {
+                if (dbcom.Parameters[i].Value.ToString() != "%" + author + "%")
+                {
+                    SqlParameter p = new SqlParameter(dbcom.Parameters[i].ParameterName, dbcom.Parameters[i].Value);
+                    cmd.Parameters.Add(p);
+                }
+            }
+
+            cmd.CommandText = rescom;
+            cmd.Connection = con;
+
+            FileStream stream = new FileStream(@"query.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(rescom);
+
+            writer.Close();
+
+            SqlDataAdapter adapt = new SqlDataAdapter(cmd);
+
+            try
+            {
+                con.Open();
+                adapt.Fill(tab);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+            return tab;
+        }
+        
+    }
+}

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="GEOLOGIYA" Class="DannieDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=C4\SERVC4;Initial Catalog=GEOLOGIYA;Integrated Security=True" SettingsObjectName="Geologiya.Properties.Settings" SettingsPropertyName="GEOLOGIYAConnectionString1" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.danie" Member="danies">
+    <Type Name="danie">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="nomer" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="tema1" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="tema2" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Aftor" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Naz" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Org" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Gorod" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="God" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Str" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Ilustr" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Slova" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Referat" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Mesto" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Users" Member="Users">
+    <Type Name="User">
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(20) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+</Database>

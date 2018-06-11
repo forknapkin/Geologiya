@@ -1,0 +1,4 @@
+SELECT [t0].[ID], [t0].[nomer], [t0].[tema1], [t0].[tema2], [t0].[Aftor], [t0].[Naz], [t0].[Org], [t0].[Gorod], [t0].[God], [t0].[Str], [t0].[Ilustr], [t0].[Slova], [t0].[Referat], [t0].[Mesto]
+FROM [dbo].[danie] AS [t0]
+WHERE [t0].[ID] > @p0 AND [t0].[ID] IN (SELECT [t1].[ID] FROM [dbo].[danie] AS [t1] WHERE ((Slova LIKE '% йод%') OR (Slova LIKE '%.йод%') OR (Slova LIKE 'йод%')) AND ((Slova LIKE '% бром%') OR (Slova LIKE '%.бром%') OR (Slova LIKE 'бром%'))  AND [t1].[ID] NOT IN (SELECT [t2].[ID] FROM [dbo].[danie] AS [t2] WHERE ((Slova LIKE '% вода%') OR (Slova LIKE '%.вода%') OR (Slova LIKE 'вода%')) AND ((Slova LIKE '% вода%') OR (Slova LIKE '%.вода%') OR (Slova LIKE 'вода%')) ))
+ORDER BY [t0].[nomer]
