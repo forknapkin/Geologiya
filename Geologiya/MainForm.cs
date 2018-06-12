@@ -1016,7 +1016,7 @@ namespace Geologiya
         {
 
             buttonAdd.Visible = buttonDelete.Visible = buttonUpdate.Visible = menuItemConvector.Visible =
-                menuItemSQLConnect.Visible = menuItemUsers.Visible = menuItemExitAdmin.Visible = menuDuplicate.Visible = Util.IsAuthotization;
+                menuItemSQLConnect.Visible = menuItemUsers.Visible = menuItemExitAdmin.Visible = menuDuplicate.Visible = tsmiCreateCopy.Visible= Util.IsAuthotization;
 
         }
 
@@ -1092,7 +1092,28 @@ namespace Geologiya
 
         private void tsmiCreateCopy_Click(object sender, EventArgs e)
         {
-            
+            string fileName = null, dbName = null;
+            SaveFileDialog saveBackup = new SaveFileDialog();
+            saveBackup.Filter = "Backup File|*.bak";
+            saveBackup.Title = "Укажите место для сохранения резервной копии";
+            if (Util.language == "Русскоязычная")
+            {
+                fileName = "Geologiya.bak";
+                dbName = "Geologiya";
+                saveBackup.FileName = fileName;
+            }
+            else
+            {
+                fileName = "GeologiyaUZB.bak";
+                dbName = "GeologiyaUZB";
+                saveBackup.FileName = fileName;
+            }
+            if (saveBackup.ShowDialog() == DialogResult.OK)
+            {
+                MessageBox.Show("В зависимости от размеров базы данных для создание резервной копии может потребоваться продолжительное время!");
+                Util.CreateBackup(dbName, saveBackup.FileName);
+            }
+             
         }
     }
 }

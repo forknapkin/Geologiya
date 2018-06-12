@@ -7,6 +7,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Data.Common;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace Geologiya
 {
@@ -481,6 +483,49 @@ namespace Geologiya
             }
 
             return tab;
+        }
+
+        public static void CreateBackup(string dbName, string fileName)
+        {
+            try
+            {
+                SqlConnectionStringBuilder conStringBuilder = new SqlConnectionStringBuilder(ConStr);
+
+                // Connect to the local, default instance of SQL Server.   
+                Server srv = new Server(conStringBuilder.DataSource);
+                                                                    
+                // Define a Backup object variable.   
+                Backup bk = new Backup();
+
+                // Specify the type of backup, the description, the name, and the database to be backed up.   
+                bk.Action = BackupActionType.Database;
+                bk.BackupSetDescription = "Full backup of " + dbName;
+                bk.BackupSetName = dbName + " Backup";
+                bk.Database = dbName;
+
+                // Declare a BackupDeviceItem by supplying the backup device file name in the constructor, and the type of device is a file.   
+                BackupDeviceItem bdi = default(BackupDeviceItem);
+                bdi = new BackupDeviceItem(fileName, DeviceType.File);
+
+                // Add the device to the Backup object.   
+                bk.Devices.Add(bdi);
+                // Set the Incremental property to False to specify that this is a full database backup.   
+                bk.Incremental = false;
+            
+                // Specify that the log must be truncated after the backup is complete.   
+                bk.LogTruncation = BackupTruncateLogType.Truncate;
+
+                // Run SqlBackup to perform the full database backup on the instance of SQL Server.   
+                bk.SqlBackup(srv);
+
+                // Remove the backup device from the Backup object.   
+                bk.Devices.Remove(bdi);
+                MessageBox.Show("Создание резервной копии завершено");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         
     }
