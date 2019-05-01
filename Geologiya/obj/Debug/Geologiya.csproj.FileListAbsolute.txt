@@ -490,7 +490,6 @@ C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Geologiya.pdb
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\uz-Cyrl-UZ\Geologiya.resources.dll
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\ru-RU\Geologiya.resources.dll
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\ru\Geologiya.resources.dll
-C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.AzureStorageEnum.dll
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.BatchParserClient.dll
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.ConnectionInfo.dll
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.ConnectionInfoExtended.dll
@@ -520,7 +519,6 @@ C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.SString.
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.Types.dll
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.WmiEnum.dll
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\stdole.dll
-C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.AzureStorageEnum.xml
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.ConnectionInfo.xml
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.ConnectionInfoExtended.xml
 C:\work\AIPS Geolfond\Geologiya\Geologiya\bin\Debug\Microsoft.SqlServer.Dmf.xml

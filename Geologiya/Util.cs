@@ -460,12 +460,6 @@ namespace Geologiya
             cmd.CommandText = rescom;
             cmd.Connection = con;
 
-            FileStream stream = new FileStream(@"query.txt", FileMode.OpenOrCreate, FileAccess.Write);
-            StreamWriter writer = new StreamWriter(stream);
-            writer.Write(rescom);
-
-            writer.Close();
-
             SqlDataAdapter adapt = new SqlDataAdapter(cmd);
 
             try

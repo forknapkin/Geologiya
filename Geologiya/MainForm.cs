@@ -839,14 +839,42 @@ namespace Geologiya
             this.Cursor = Cursors.WaitCursor;
             try
             {
-                int id = (int)dGridView["ID", dGridView.CurrentRow.Index].Value;
+                //int id = (int)dGridView["ID", dGridView.CurrentRow.Index].Value;
 
-                dGridView.Rows.RemoveAt(dGridView.CurrentRow.Index);
+                //dGridView.Rows.RemoveAt(dGridView.CurrentRow.Index);
 
                 //var res = tab.Where(wh => wh.ID == id).SingleOrDefault();
 
                 //dcont.danies.DeleteOnSubmit(res);
                 //dcont.SubmitChanges();
+
+                for (int i = 0; i < dGridView.Rows.Count; i++)
+                {
+                    if ((bool)dGridView.Rows[i].Cells["check"].EditedFormattedValue == true)
+                    {
+                        try
+                        {
+                            int id = (int)dGridView["ID", dGridView.Rows[i].Index].Value;
+                            
+                            var res = tabDanie.Where(wh => wh.ID == id).SingleOrDefault();
+                            dcont.danies.DeleteOnSubmit(res);
+                            dcont.SubmitChanges();
+
+                            //dGridView.Rows.RemoveAt(dGridView.Rows[i].Index);
+                        }
+                        catch (NullReferenceException ex)
+                        {
+                            this.Cursor = Cursors.Default;
+                            MessageBox.Show("Не выбрана запись для удаления!");
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            this.Cursor = Cursors.Default;
+                            MessageBox.Show(ex.Message);
+                        }
+                    }
+                }
             }
             catch (NullReferenceException ex)
             {
@@ -861,7 +889,9 @@ namespace Geologiya
             }
             finally
             {
+                dGridView.DataSource = tabDanie;
                 this.Cursor = Cursors.Default;
+
             }
 
         }

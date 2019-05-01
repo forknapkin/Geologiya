@@ -98,14 +98,14 @@
             this.menuItemConvector = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemUsers = new System.Windows.Forms.ToolStripMenuItem();
             this.menuDuplicate = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiCreateCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemExitAdmin = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.userHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.tsmiCreateCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBoxKW.SuspendLayout();
@@ -628,6 +628,17 @@
             resources.ApplyResources(this.menuDuplicate, "menuDuplicate");
             this.menuDuplicate.Click += new System.EventHandler(this.menuDuplicate_Click);
             // 
+            // tsmiCreateCopy
+            // 
+            this.tsmiCreateCopy.Name = "tsmiCreateCopy";
+            resources.ApplyResources(this.tsmiCreateCopy, "tsmiCreateCopy");
+            this.tsmiCreateCopy.Click += new System.EventHandler(this.tsmiCreateCopy_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
+            // 
             // menuItemExitAdmin
             // 
             this.menuItemExitAdmin.Name = "menuItemExitAdmin";
@@ -669,17 +680,6 @@
             this.userHelpToolStripMenuItem});
             resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
-            // 
-            // tsmiCreateCopy
-            // 
-            this.tsmiCreateCopy.Name = "tsmiCreateCopy";
-            resources.ApplyResources(this.tsmiCreateCopy, "tsmiCreateCopy");
-            this.tsmiCreateCopy.Click += new System.EventHandler(this.tsmiCreateCopy_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
             // 
             // MainForm
             // 
