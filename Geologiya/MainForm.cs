@@ -525,8 +525,8 @@ namespace Geologiya
                         }
                         else 
                         {
-                        if (!rbOrKW.Checked)
-                            return;
+                            if (!rbOrKW.Checked)
+                                return;
                             dGridView.DataSource = Util.ComboQueryResult(textBoxKeyWords.Text, " OR ", dcont.GetCommand(res), false, false, string.Empty, this.cbxAccuracySearch.Checked);
                         }
                     }
@@ -543,8 +543,8 @@ namespace Geologiya
                         }
                         else 
                         {
-                        if (!rbOrExKW.Checked)
-                            return;
+                            if (!rbOrExKW.Checked)
+                                return;
                             dGridView.DataSource = Util.ComboQueryResult(textBoxExeptionWords.Text, " OR ", dcont.GetCommand(res), false, true, string.Empty, this.cbxAccuracySearch.Checked);
                         }
                     }
@@ -889,7 +889,7 @@ namespace Geologiya
             }
             finally
             {
-                dGridView.DataSource = tabDanie;
+                dGridView.DataSource = tabDanie.OrderByDescending(ob => ob.nomer);
                 this.Cursor = Cursors.Default;
 
             }
